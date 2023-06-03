@@ -44,7 +44,7 @@ Add `gem "weaviate-ruby", "~> 0.8.0"`  to your Gemfile.
 
 Pick the vector search database you'll be using and instantiate the client:
 ```ruby
-client = Vectorsearch::Weaviate.new(
+client = Langchain::Vectorsearch::Weaviate.new(
     url: ENV["WEAVIATE_URL"],
     api_key: ENV["WEAVIATE_API_KEY"],
     llm: :openai, # or :cohere
@@ -52,10 +52,10 @@ client = Vectorsearch::Weaviate.new(
 )
 
 # You can instantiate any other supported vector search database:
-client = Vectorsearch::Milvus.new(...) # `gem "milvus", "~> 0.9.0"`
-client = Vectorsearch::Qdrant.new(...) # `gem"qdrant-ruby", "~> 0.9.0"`
-client = Vectorsearch::Pinecone.new(...) # `gem "pinecone", "~> 0.1.6"`
-client = Vectorsearch::Chroma.new(...) # `gem "chroma-db", "~> 0.3.0"`
+client = Langchain::Vectorsearch::Milvus.new(...) # `gem "milvus", "~> 0.9.0"`
+client = Langchain::Vectorsearch::Qdrant.new(...) # `gem"qdrant-ruby", "~> 0.9.0"`
+client = Langchain::Vectorsearch::Pinecone.new(...) # `gem "pinecone", "~> 0.1.6"`
+client = Langchain::Vectorsearch::Chroma.new(...) # `gem "chroma-db", "~> 0.3.0"`
 ```
 
 ```ruby
@@ -107,7 +107,11 @@ Add `gem "ruby-openai", "~> 4.0.0"` to your Gemfile.
 
 #### OpenAI
 ```ruby
-openai = LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
+openai = Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
+```
+You can pass additional parameters to the constructor, it will be passed to the OpenAI client:
+```ruby
+openai = Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"], llm_options: {uri_base: "http://localhost:1234"}) )
 ```
 ```ruby
 openai.embed(text: "foo bar")
@@ -120,7 +124,7 @@ openai.complete(prompt: "What is the meaning of life?")
 Add `gem "cohere-ruby", "~> 0.9.3"` to your Gemfile.
 
 ```ruby
-cohere = LLM::Cohere.new(api_key: ENV["COHERE_API_KEY"])
+cohere = Langchain::LLM::Cohere.new(api_key: ENV["COHERE_API_KEY"])
 ```
 ```ruby
 cohere.embed(text: "foo bar")
@@ -132,19 +136,19 @@ cohere.complete(prompt: "What is the meaning of life?")
 #### HuggingFace
 Add `gem "hugging-face", "~> 0.3.2"` to your Gemfile.
 ```ruby
-cohere = LLM::HuggingFace.new(api_key: ENV["HUGGING_FACE_API_KEY"])
+cohere = Langchain::LLM::HuggingFace.new(api_key: ENV["HUGGING_FACE_API_KEY"])
 ```
 
 #### Replicate
 Add `gem "replicate-ruby", "~> 0.2.2"` to your Gemfile.
 ```ruby
-cohere = LLM::Replicate.new(api_key: ENV["REPLICATE_API_KEY"])
+cohere = Langchain::LLM::Replicate.new(api_key: ENV["REPLICATE_API_KEY"])
 ```
 
 #### Google PaLM (Pathways Language Model)
 Add `"google_palm_api", "~> 0.1.0"` to your Gemfile.
 ```ruby
-google_palm = LLM::GooglePalm.new(api_key: ENV["GOOGLE_PALM_API_KEY"])
+google_palm = Langchain::LLM::GooglePalm.new(api_key: ENV["GOOGLE_PALM_API_KEY"])
 ```
 
 ### Using Prompts 📋
@@ -154,21 +158,21 @@ google_palm = LLM::GooglePalm.new(api_key: ENV["GOOGLE_PALM_API_KEY"])
 Create a prompt with one input variable:
 
 ```ruby
-prompt = Prompt::PromptTemplate.new(template: "Tell me a {adjective} joke.", input_variables: ["adjective"])
+prompt = Langchain::Prompt::PromptTemplate.new(template: "Tell me a {adjective} joke.", input_variables: ["adjective"])
 prompt.format(adjective: "funny") # "Tell me a funny joke."
 ```
 
 Create a prompt with multiple input variables:
 
 ```ruby
-prompt = Prompt::PromptTemplate.new(template: "Tell me a {adjective} joke about {content}.", input_variables: ["adjective", "content"])
+prompt = Langchain::Prompt::PromptTemplate.new(template: "Tell me a {adjective} joke about {content}.", input_variables: ["adjective", "content"])
 prompt.format(adjective: "funny", content: "chickens") # "Tell me a funny joke about chickens."
 ```
 
 Creating a PromptTemplate using just a prompt and no input_variables:
 
 ```ruby
-prompt = Prompt::PromptTemplate.from_template("Tell me a {adjective} joke about {content}.")
+prompt = Langchain::Prompt::PromptTemplate.from_template("Tell me a {adjective} joke about {content}.")
 prompt.input_variables # ["adjective", "content"]
 prompt.format(adjective: "funny", content: "chickens") # "Tell me a funny joke about chickens."
 ```
@@ -182,7 +186,7 @@ prompt.save(file_path: "spec/fixtures/prompt/prompt_template.json")
 Loading a new prompt template using a JSON file:
 
 ```ruby
-prompt = Prompt.load_from_path(file_path: "spec/fixtures/prompt/prompt_template.json")
+prompt = Langchain::Prompt.load_from_path(file_path: "spec/fixtures/prompt/prompt_template.json")
 prompt.input_variables # ["adjective", "content"]
 ```
 
@@ -191,10 +195,10 @@ prompt.input_variables # ["adjective", "content"]
 Create a prompt with a few shot examples:
 
 ```ruby
-prompt = Prompt::FewShotPromptTemplate.new(
+prompt = Langchain::Prompt::FewShotPromptTemplate.new(
   prefix: "Write antonyms for the following words.",
   suffix: "Input: {adjective}\nOutput:",
-  example_prompt: Prompt::PromptTemplate.new(
+  example_prompt: Langchain::Prompt::PromptTemplate.new(
     input_variables: ["input", "output"],
     template: "Input: {input}\nOutput: {output}"
   ),
@@ -228,7 +232,7 @@ prompt.save(file_path: "spec/fixtures/prompt/few_shot_prompt_template.json")
 Loading a new prompt template using a JSON file:
 
 ```ruby
-prompt = Prompt.load_from_path(file_path: "spec/fixtures/prompt/few_shot_prompt_template.json")
+prompt = Langchain::Prompt.load_from_path(file_path: "spec/fixtures/prompt/few_shot_prompt_template.json")
 prompt.prefix # "Write antonyms for the following words."
 ```
 
@@ -237,10 +241,10 @@ Agents are semi-autonomous bots that can respond to user questions and use avail
 
 #### Chain-of-Thought Agent
 
-Add `gem "openai-ruby"`, `gem "eqn"`, and `gem "google_search_results"` to your Gemfile
+Add `gem "ruby-openai"`, `gem "eqn"`, and `gem "google_search_results"` to your Gemfile
 
 ```ruby
-agent = Agent::ChainOfThoughtAgent.new(llm: :openai, llm_api_key: ENV["OPENAI_API_KEY"], tools: ['search', 'calculator'])
+agent = Langchain::Agent::ChainOfThoughtAgent.new(llm: :openai, llm_api_key: ENV["OPENAI_API_KEY"], tools: ['search', 'calculator'])
 
 agent.tools
 # => ["search", "calculator"]
@@ -260,9 +264,9 @@ agent.run(question: "How many full soccer fields would be needed to cover the di
 | Name         | Description                                        | ENV Requirements                                              | Gem Requirements                          |
 | ------------ | :------------------------------------------------: | :-----------------------------------------------------------: | :---------------------------------------: |
 | "calculator" | Useful for getting the result of a math expression |                                                               | `gem "eqn", "~> 1.6.5"`                   |
-| "search"     | A wrapper around Google Search                     | `ENV["SERPAPI_API_KEY"]` (https://serpapi.com/manage-api-key) | `gem "google_search_results", "~> 2.0.0"` |                      |
+| "ruby_code_interpreter" | Interprets Ruby expressions             |                                                               | `gem "safe_ruby", "~> 1.0.4"`             |
+| "search"     | A wrapper around Google Search                     | `ENV["SERPAPI_API_KEY"]` (https://serpapi.com/manage-api-key) | `gem "google_search_results", "~> 2.0.0"` |
 | "wikipedia"  | Calls Wikipedia API to retrieve the summary        |                                                               | `gem "wikipedia-client", "~> 1.17.0"`     |
-
 
 #### Loaders 🚚
 
@@ -273,7 +277,7 @@ Need to read data from various sources? Load it up.
 Just call `Langchan::Loader.load` with the path to the file or a URL you want to load.
 
 ```ruby
-Langchaing::Loader.load('/path/to/file.pdf')
+Langchain::Loader.load('/path/to/file.pdf')
 ```
 
 or
@@ -300,7 +304,7 @@ Additional examples available: [/examples](https://github.com/andreibondarev/lan
 
 ## Logging
 
-LangChain.rb uses standard logging mechanisms and defaults to `:debug` level. Most messages are at info level, but we will add debug or warn statements as needed.
+LangChain.rb uses standard logging mechanisms and defaults to `:warn` level. Most messages are at info level, but we will add debug or warn statements as needed.
 To show all log messages:
 
 ```ruby

@@ -122,7 +122,7 @@ RSpec.describe Langchain::Loader do
       end
 
       context "from local file" do
-        context 'with default options' do
+        context "with default options" do
           let(:path) { "spec/fixtures/loaders/example.csv" }
 
           it "loads data from file" do
@@ -131,9 +131,9 @@ RSpec.describe Langchain::Loader do
           end
         end
 
-        context 'with custom options' do
+        context "with custom options" do
           let(:path) { "spec/fixtures/loaders/semicolon_example.csv" }
-          let(:options) { { col_sep: ';' } }
+          let(:options) { {col_sep: ";"} }
 
           subject { described_class.new(path, options).load }
 

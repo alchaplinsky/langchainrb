@@ -1,5 +1,21 @@
 ## [Unreleased]
 
+## [0.4.1] - 2023-06-02
+- Beautiful colored log messages
+- 🛠️ Tools
+  - Introducing `Langchain::Tool::RubyCodeInterpreter`, a tool executes sandboxed Ruby code
+
+## [0.4.0] - 2023-06-01
+- [BREAKING] Everything is namespaced under `Langchain::` now
+- Pgvector similarity search uses the cosine distance by default now
+- OpenAI token length validation using tiktoken_ruby
+
+## [0.3.15] - 2023-05-30
+- Drop Ruby 2.7 support. It had reached EOD.
+- Bump pgvector-ruby to 0.2
+- 🚚 Loaders
+  - Support for options and block to be passed to CSV processor
+
 ## [0.3.14] - 2023-05-28
 - 🔍 Vectorsearch
   - Not relying on Weaviate modules anymore
