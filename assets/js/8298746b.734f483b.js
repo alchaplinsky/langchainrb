@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklangchain=self.webpackChunklangchain||[]).push([[4057],{4188:a=>{a.exports=JSON.parse('{"permalink":"/langchainrb/blog/tags/docusaurus","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
